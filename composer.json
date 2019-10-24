@@ -1,5 +1,5 @@
 {
-    "name": "kingstarter/laravel-saml",
+    "name": "drienultwee/laravel-saml",
     "description": "SAML support to make a laravel application to both a SAML IDP and a SAML SP.",
     "keywords": ["laravel", "saml", "illuminate", "auth", "acl", "login", "sso", "idp", "sp"],
     "license": "MIT",
@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "illuminate/support": "~5.2",
+        "illuminate/support": "^6.0",
         "lightsaml/lightsaml": "^1.3"
     },
     "autoload": {
