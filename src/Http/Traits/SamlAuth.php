@@ -152,7 +152,7 @@ trait SamlAuth
         if (\Auth::check()) {
             $user = \Auth::user();
             
-            $attributes = $user->getAttributesForSaml(base64_encode($authnRequest->getAssertionConsumerServiceURL()));
+            $userAttributes = $user->getAttributesForSaml(base64_encode($authnRequest->getAssertionConsumerServiceURL()));
             
             foreach($userAttributes as $key => $value) {
                 $attributes->addAttribute(new \LightSaml\Model\Assertion\Attribute($key, $value));
