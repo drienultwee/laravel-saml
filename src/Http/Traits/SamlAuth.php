@@ -147,20 +147,18 @@ trait SamlAuth
 
         $this->addRelayStateToResponse($response);
 
-        // We are responding with both the email and the username as attributes
-        // TODO: Add here other attributes, e.g. groups / roles / permissions
-        $roles = array();
+        $attributes = new \LightSaml\Model\Assertion\AttributeStatement();
+        
         if (\Auth::check()) {
-            $user   = \Auth::user();
-            $nameID = $this->getNameId($user, $authnRequest);
-            $email  = $user->email;
-            $name   = $user->name;
-            if (config('saml.forward_roles')) {
-                $roles = $user->roles->pluck('name')->all();
+            $user = \Auth::user();
+            
+            $attributes = $user->getAttributesForSaml(base64_encode($authnRequest->getAssertionConsumerServiceURL()));
+            
+            foreach($userAttributes as $key => $value) {
+                $attributes->addAttribute(new \LightSaml\Model\Assertion\Attribute($key, $value));
             }
-        } else {
-            $email = $request['email'];
-            $name  = 'Place Holder';
+            
+            $nameID = $this->getNameId($user, $authnRequest);
         }
         
         // Generate the SAML assertion for the response xml object
@@ -198,21 +196,7 @@ trait SamlAuth
                                 )])
                         )
                 )
-            ->addItem(
-                (new \LightSaml\Model\Assertion\AttributeStatement())
-                    ->addAttribute(new \LightSaml\Model\Assertion\Attribute(
-                        \LightSaml\ClaimTypes::EMAIL_ADDRESS,
-                        $email
-                    ))
-                    ->addAttribute(new \LightSaml\Model\Assertion\Attribute(
-                        \LightSaml\ClaimTypes::COMMON_NAME,
-                        $name
-                    ))
-                    ->addAttribute(new \LightSaml\Model\Assertion\Attribute(
-                        \LightSaml\ClaimTypes::ROLE,
-                        $roles
-                    ))
-            )
+            ->addItem($attributes)
             ->addItem(
                 (new \LightSaml\Model\Assertion\AuthnStatement())
                 ->setAuthnInstant(new \DateTime('-10 MINUTE'))
