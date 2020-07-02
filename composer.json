@@ -20,12 +20,6 @@
             "KingStarter\\LaravelSaml\\": "src"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/drienultwee/lightsaml"
-        }
-    ],
     "extra": {
         "laravel": {
           "providers": [
